@@ -83,6 +83,7 @@ def show_shopping_cart():
     melon_ids_in_cart = shopping_cart.keys()
     melon_objects = []
     melon_total_cost = 0
+    melon_list = []
 
     for melon_id in melon_ids_in_cart:
         melon = melons.get_by_id(melon_id)
@@ -91,9 +92,19 @@ def show_shopping_cart():
         melon.cost = melon.price * melon.melon_qty  # individual total cost each melon type
         melon_total_cost += melon.cost  # grand total of all melons
         melon.total = melon_total_cost
+        melon_dict = {
+                        melon.melon_id: [melon.common_name, melon.melon_qty, melon.price, melon.cost]
+                    }
 
-    print melon_total_cost
-    return render_template("cart.html")
+        melon_list.append(melon_dict)
+
+    print melon_list
+
+    return render_template("cart.html", melon_list=melon_list, melon_total=melon.total,
+                           name=melon.common_name,
+                           qty=melon.melon_qty,
+                           price=melon.price,
+                           cost=melon.cost)
 
 
 @app.route("/add_to_cart/<melon_id>")
